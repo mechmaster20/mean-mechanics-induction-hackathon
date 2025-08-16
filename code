@@ -1,0 +1,165 @@
+#include <Servo.h>
+//we will define all motor pins
+//lets start with motor 1 pins
+int m1b = 11;
+int m1a = 10;
+//defining motor 2 pins
+int m2a = 13;
+int m2b = 12;
+//defining motor 3 pins
+int m3a = 9;
+int m3b = 8;
+//defining motor 4 pins;
+int m4a = 7;
+int m4b = 6;
+//define sensor control pin and other necessary variables
+int echo = 5;
+int trigg =4;
+int dist=0;
+//defining servo pins and necessary pins for servo
+Servo myservo;
+int pos =0;
+void setup()
+{
+  //setting up all pins 
+  pinMode(LED_BUILTIN, OUTPUT);
+  myservo.attach(3);
+  analogWrite(A0,255);
+  analogWrite(A1,255);
+  analogWrite(A2,255);
+  analogWrite(A3,255);
+  pinMode(m1a, OUTPUT);
+  pinMode(m1b, OUTPUT);
+  pinMode(m2a, OUTPUT);
+  pinMode(m2b, OUTPUT);
+  pinMode(m3a, OUTPUT);
+  pinMode(m3b, OUTPUT);
+  pinMode(m4a, OUTPUT);
+  pinMode(m4b, OUTPUT);
+  pinMode(trigg, OUTPUT);
+  pinMode(echo, INPUT);
+  void stop();
+}
+//defined function to move forward
+void move_forward()
+{
+  digitalWrite(m1a, LOW);
+  digitalWrite(m1b, HIGH);
+  digitalWrite(m2a, LOW);
+  digitalWrite(m2b, HIGH);
+  digitalWrite(m3a, LOW);
+  digitalWrite(m3b, HIGH);
+  digitalWrite(m4a, LOW);
+  digitalWrite(m4b, HIGH);
+}
+//defined function to move left (either left or right)
+void move_left()
+{
+  digitalWrite(m1a, LOW);
+  digitalWrite(m1b, HIGH);
+  digitalWrite(m2b, LOW);
+  digitalWrite(m2a, HIGH);
+  digitalWrite(m3a, LOW);
+  digitalWrite(m3b, HIGH);
+  digitalWrite(m4b, LOW);
+  digitalWrite(m4a, HIGH);
+}
+//defined function to move right (either left or right)
+void move_right()
+{
+  digitalWrite(m1a, LOW);
+  digitalWrite(m1b, HIGH);
+  digitalWrite(m2b, LOW);
+  digitalWrite(m2a, HIGH);
+  digitalWrite(m3a, LOW);
+  digitalWrite(m3b, HIGH);
+  digitalWrite(m4b, LOW);
+  digitalWrite(m4a, HIGH);
+}
+void stop()
+{
+  //setting all motors to no movement
+  digitalWrite(m1a, LOW);
+  digitalWrite(m1b, LOW);
+  digitalWrite(m2a, LOW);
+  digitalWrite(m2b, LOW);
+  digitalWrite(m3a, LOW);
+  digitalWrite(m3b, LOW);
+  digitalWrite(m4a, LOW);
+  digitalWrite(m4b, LOW);
+}
+void back()
+{
+  digitalWrite(m1b, LOW);
+  digitalWrite(m1a, HIGH);
+  digitalWrite(m2b, LOW);
+  digitalWrite(m2a, HIGH);
+  digitalWrite(m3b, LOW);
+  digitalWrite(m3a, HIGH);
+  digitalWrite(m4b, LOW);
+  digitalWrite(m4a, HIGH);
+}
+void scan()
+{
+  for(int i = 1,pos = 45;i<=3;i++,pos+=45)
+  {
+    myservo.write(pos);
+  	digitalWrite(trigg,LOW);       
+  	digitalWrite(trigg,HIGH);        
+  	digitalWrite(trigg,LOW); 
+  	dist=pulseIn(echo,HIGH);      
+  	dist = dist/58;
+    if (dist>=150)
+    {
+      if(pos == 90)
+      {
+        move_forward();
+        delay(500);
+        scan();
+      }
+      if(pos == 45)
+      {
+        move_left();
+        delay(250);
+        move_forward();
+        delay(500);
+        scan();
+      }
+      if(pos == 75)
+      {
+        move_right();
+        delay(250);
+        move_forward();
+        delay(500);
+        scan();
+      }
+    }
+    if (dist<=150)
+    {
+      if (pos == 45)
+      {
+        move_left();
+        delay(500);
+        scan();
+      }
+      if (pos == 75)
+      {
+        move_right();
+        delay(500);
+        scan();
+      }
+      if (pos == 90)
+      {
+        stop();
+        delay(500);
+        scan();
+      }
+    }
+      
+  }
+  
+}
+void loop()
+{
+  scan();
+}
