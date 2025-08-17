@@ -19,10 +19,11 @@ int dist=0;
 //defining servo pins and necessary pins for servo
 Servo myservo;
 int pos =0;
+int loc =0;
+int ct=0;
 void setup()
 {
   //setting up all pins 
-  pinMode(LED_BUILTIN, OUTPUT);
   myservo.attach(3);
   analogWrite(A0,255);
   analogWrite(A1,255);
@@ -88,7 +89,7 @@ void stop()
   digitalWrite(m4a, LOW);
   digitalWrite(m4b, LOW);
 }
-void back()
+void move_back()
 {
   digitalWrite(m1b, LOW);
   digitalWrite(m1a, HIGH);
@@ -109,55 +110,82 @@ void scan()
   	digitalWrite(trigg,LOW); 
   	dist=pulseIn(echo,HIGH);      
   	dist = dist/58;
+    delay(1000);
     if (dist>=150)
     {
+      ct=1;
       if(pos == 90)
       {
-        move_forward();
-        delay(500);
-        scan();
+        loc=2;
       }
       if(pos == 45)
       {
-        move_left();
-        delay(250);
-        move_forward();
-        delay(500);
-        scan();
+        loc=1;
       }
-      if(pos == 75)
+      if(pos == 135)
       {
-        move_right();
-        delay(250);
-        move_forward();
-        delay(500);
-        scan();
+        loc=3;
       }
     }
     if (dist<=150)
     {
+      ct=2;
       if (pos == 45)
       {
-        move_left();
-        delay(500);
-        scan();
+        loc=1;
       }
-      if (pos == 75)
-      {
-        move_right();
-        delay(500);
-        scan();
-      }
+      if (pos == 135)
+        loc=3;
       if (pos == 90)
-      {
-        stop();
-        delay(500);
-        scan();
-      }
+        loc=2;
     }
       
   }
+  decision();
   
+}
+void decision()
+{
+    if(ct==1)
+  {
+    if(pos=1)
+    {
+      move_left();
+      delay(500);
+      move_forward();
+    }
+    if(pos=2)
+    {
+      delay(500);
+      move_forward();
+    }
+    if(pos=3)
+    {
+      move_right();
+      delay(500);
+      move_forward();
+    }
+  }
+  if(ct==2)
+  {
+    if(pos=1)
+    {
+      move_left();
+      delay(500);
+      move_back();
+    }
+    if(pos=2)
+    {
+      delay(500);
+      move_back();
+    }
+    if(pos=3)
+    {
+      move_right();
+      delay(500);
+      move_back();
+    }
+  }
 }
 void loop()
 {
