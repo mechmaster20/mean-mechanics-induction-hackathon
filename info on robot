@@ -1,0 +1,4 @@
+the robot is a 4 motor drive robot capable of detecting obstacles and avoiding them. 
+a ultrasonic saensor mounted on a servo motor is used to achieve this. 
+the ultrasonic sensor mounted the servo motor detects obstales left front and to the right of the robot. depending on the input given, it moves in the direction which is free.
+the code has many bugs, but i need to make a real model to easilly debugg the code.
